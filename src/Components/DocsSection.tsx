@@ -719,6 +719,11 @@ const DocsSection = (): JSX.Element => {
         <div className="docs__layout">
 
           <aside className="docs__sidebar">
+            <div className="docs__sidebar-hint mono">
+              <span className="docs__sidebar-hint--desktop">↳ Da clic en cada sección para navegar</span>
+              <span className="docs__sidebar-hint--mobile">Desliza para ver todas las secciones</span>
+            </div>
+            <div className="docs__sidebar-tabs">
             {TABS.map(tab => (
               <button
                 key={tab.id}
@@ -729,6 +734,7 @@ const DocsSection = (): JSX.Element => {
                 <span className="docs__tab-label">{tab.label}</span>
               </button>
             ))}
+            </div>
             <div className="docs__sidebar-footer">
               <a
                 href={DRIVE_URL}

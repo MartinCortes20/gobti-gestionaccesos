@@ -72,57 +72,118 @@
   top: 5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  background: var(--bg-card);
+  gap: 0.25rem;
+  background: linear-gradient(180deg, rgba(168, 85, 247, 0.04) 0%, rgba(20, 18, 28, 0.6) 100%);
   border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  padding: 0.75rem;
+  border-radius: 12px;
+  padding: 0.85rem;
   max-height: calc(100vh - 6rem);
   overflow-y: auto;
+  counter-reset: docs-tab;
+  backdrop-filter: blur(8px);
+}
+
+.docs__sidebar-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .docs__sidebar::-webkit-scrollbar { width: 4px; }
 .docs__sidebar::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.3); border-radius: 2px; }
 
-.docs__tab + .docs__tab { margin-top: 0; }
+.docs__sidebar-hint {
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 0.4rem 0.5rem 0.6rem;
+  border-bottom: 1px dashed rgba(168, 85, 247, 0.18);
+  margin-bottom: 0.4rem;
+  text-align: center;
+}
+.docs__sidebar-hint--mobile { display: none; }
+.docs__sidebar-hint--desktop { display: inline; }
 
 .docs__tab {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.7rem;
   width: 100%;
   text-align: left;
-  padding: 0.5rem 0.75rem;
-  border-radius: 5px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  padding: 0.55rem 0.75rem 0.55rem 0.6rem;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  border: none;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  border: 1px solid transparent;
   background: none;
+  counter-increment: docs-tab;
+}
+
+.docs__tab::before {
+  content: counter(docs-tab, decimal-leading-zero);
+  position: absolute;
+  right: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+  letter-spacing: 0.06em;
+  transition: opacity 0.2s, color 0.2s;
 }
 
 .docs__tab:hover {
+  background: rgba(168, 85, 247, 0.06);
+  color: var(--text-primary);
+  transform: translateX(2px);
+}
+
+.docs__tab:hover::before { opacity: 0.9; color: var(--claude-peach); }
+
+.docs__tab--active {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(232, 121, 90, 0.08) 100%);
+  border-color: rgba(168, 85, 247, 0.35);
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.15), 0 6px 18px -8px rgba(168, 85, 247, 0.45);
+}
+
+.docs__tab--active::before { color: var(--claude-coral); opacity: 1; }
+
+.docs__tab-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
   background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  color: var(--claude-coral);
+  font-size: 0.85rem;
+  transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.25s;
+}
+
+.docs__tab:hover .docs__tab-icon {
+  background: rgba(168, 85, 247, 0.16);
+  border-color: rgba(168, 85, 247, 0.35);
   color: var(--claude-peach);
 }
 
-.docs__tab--active {
-  background: rgba(168, 85, 247, 0.12);
-  color: var(--claude-coral);
-  border-left: 2px solid var(--claude-coral);
-  padding-left: calc(0.9rem - 2px);
+.docs__tab--active .docs__tab-icon {
+  background: linear-gradient(135deg, var(--claude-coral) 0%, var(--claude-peach) 100%);
+  border-color: transparent;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px -2px rgba(232, 121, 90, 0.5);
 }
 
-.docs__tab-icon {
-  font-size: 0.85rem;
-  flex-shrink: 0;
-  color: inherit;
-}
-
-.docs__tab-label { flex: 1; }
+.docs__tab-label { flex: 1; padding-right: 1.4rem; }
 
 .docs__sidebar-footer {
   margin-top: 0.5rem;
@@ -181,6 +242,7 @@
   border-radius: 8px;
   min-height: 500px;
   overflow: hidden;
+  min-width: 0;
 }
 
 /* ── Content ─────────────────────────────────────────── */
@@ -1163,27 +1225,64 @@
     grid-template-columns: 1fr;
   }
 
+  .docs__layout { min-width: 0; }
+
   .docs__sidebar {
     position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.4rem;
+    flex-direction: column;
+    gap: 0.5rem;
     padding: 0.6rem;
+    max-height: none;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .docs__sidebar-tabs {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.35rem;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .docs__sidebar-tabs::-webkit-scrollbar { height: 4px; }
+  .docs__sidebar-tabs::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.3); border-radius: 2px; }
+
+  .docs__sidebar-hint {
+    border-bottom: none;
+    border: 1px solid rgba(168, 85, 247, 0.18);
+    border-radius: 999px;
+    padding: 0.4rem 0.8rem;
+    margin: 0 auto;
+    background: rgba(168, 85, 247, 0.05);
+    color: var(--claude-coral);
+    animation: docsHintPulse 2.6s ease-in-out infinite;
+  }
+  .docs__sidebar-hint--desktop { display: none; }
+  .docs__sidebar-hint--mobile { display: inline; }
+  .docs__sidebar-hint--mobile::before { content: '← '; }
+  .docs__sidebar-hint--mobile::after  { content: ' →'; }
+
+  @keyframes docsHintPulse {
+    0%, 100% { opacity: 0.6; }
+    50%      { opacity: 1;   }
   }
 
   .docs__tab {
-    flex: 1;
-    min-width: 100px;
-    justify-content: center;
-    text-align: center;
+    flex: 0 0 auto;
+    min-width: auto;
+    justify-content: flex-start;
+    text-align: left;
+    scroll-snap-align: start;
+    padding: 0.5rem 0.8rem 0.5rem 0.55rem;
   }
 
-  .docs__tab--active {
-    border-left: none;
-    border-bottom: 2px solid var(--claude-coral);
-    padding-left: 0.9rem;
-    padding-bottom: calc(0.65rem - 2px);
-  }
+  .docs__tab::before { display: none; }
+  .docs__tab-label { padding-right: 0; }
 
   .docs__sidebar-footer {
     display: none;
@@ -1245,8 +1344,37 @@
   }
 
   .docs__tab-icon {
-    display: none;
+    width: 22px;
+    height: 22px;
+    font-size: 0.75rem;
   }
+
+  /* Tighter docs content on mobile */
+  .docs__content {
+    padding: 1.25rem;
+    gap: 1.5rem;
+  }
+  .docs__section { gap: 0.6rem; }
+
+  .docs__deliverable {
+    padding: 1rem 1rem 1rem 1.1rem;
+    border-radius: 8px;
+  }
+  .docs__pending { padding: 1rem; }
+
+  .docs__content .docs__h3 { font-size: 17px; }
+  .docs__content .docs__deliverable-tag,
+  .docs__content .docs__pending-tag,
+  .docs__content .docs__pending-title,
+  .docs__content .docs__primitive-title,
+  .docs__content .docs__layer-title,
+  .docs__content .docs__tech-name { font-size: 15px; }
+  .docs__content .docs__p,
+  .docs__content .docs__primitive-desc,
+  .docs__content .docs__layer-module-role,
+  .docs__content .docs__tech-role,
+  .docs__content .docs__pending-desc { font-size: 14px; line-height: 1.55; }
+  .docs__content .docs__p { margin-bottom: 0.7rem; }
 }
 
 /* ── Pending document card ──────────────────────────── */
@@ -1346,6 +1474,42 @@
   border-radius: 10px;
   background: linear-gradient(135deg, rgba(168, 85, 247, 0.04) 0%, rgba(168, 85, 247, 0.01) 100%);
   margin-top: 0.5rem;
+}
+
+/* ── Times New Roman typography for docs content ────── */
+.docs__content,
+.docs__content .docs__h3,
+.docs__content .docs__p,
+.docs__content .docs__primitive-title,
+.docs__content .docs__primitive-desc,
+.docs__content .docs__layer-title,
+.docs__content .docs__layer-module-role,
+.docs__content .docs__tech-name,
+.docs__content .docs__tech-role,
+.docs__content .docs__pending-title,
+.docs__content .docs__pending-desc,
+.docs__content .docs__deliverable-tag,
+.docs__content .docs__pending-tag {
+  font-family: "Times New Roman", Times, serif;
+}
+
+.docs__content .docs__h3 { font-size: 20px; }
+
+.docs__content .docs__deliverable-tag,
+.docs__content .docs__pending-tag,
+.docs__content .docs__pending-title,
+.docs__content .docs__primitive-title,
+.docs__content .docs__layer-title,
+.docs__content .docs__tech-name {
+  font-size: 18px;
+}
+
+.docs__content .docs__p,
+.docs__content .docs__primitive-desc,
+.docs__content .docs__layer-module-role,
+.docs__content .docs__tech-role,
+.docs__content .docs__pending-desc {
+  font-size: 16px;
 }
 
 .docs__deliverable-tag {
