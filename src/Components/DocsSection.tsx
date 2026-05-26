@@ -668,6 +668,10 @@ const TabPlan = (): JSX.Element => (
 const DocsSection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState<TabId>('introduccion')
   const headRef = useRef<HTMLDivElement>(null)
+  const tabsRef = useRef<HTMLDivElement>(null)
+  const tabBtnRefs = useRef<Partial<Record<TabId, HTMLButtonElement | null>>>({})
+  const activeTabRef = useRef<TabId>(activeTab)
+  activeTabRef.current = activeTab
 
   useEffect(() => {
     const el = headRef.current
@@ -679,6 +683,95 @@ const DocsSection = (): JSX.Element => {
     obs.observe(el)
     return () => obs.disconnect()
   }, [])
+
+  // En móvil: al deslizar el carrusel de tabs, siempre avanza al siguiente/anterior
+  // (no se queda a la mitad). Detecta dirección del swipe y fuerza el cambio.
+  useEffect(() => {
+    const container = tabsRef.current
+    if (!container) return
+
+    let touchActive = false
+    let startTouchX = 0
+    let startScrollLeft = 0
+    let startIndex = 0
+    let scrollTimer: number | undefined
+
+    const findClosestIndex = (): number => {
+      const cRect = container.getBoundingClientRect()
+      const center = cRect.left + cRect.width / 2
+      let closest = 0
+      let closestDist = Infinity
+      TABS.forEach((tab, i) => {
+        const btn = tabBtnRefs.current[tab.id]
+        if (!btn) return
+        const r = btn.getBoundingClientRect()
+        const d = Math.abs(r.left + r.width / 2 - center)
+        if (d < closestDist) { closestDist = d; closest = i }
+      })
+      return closest
+    }
+
+    const onTouchStart = (e: TouchEvent): void => {
+      touchActive = true
+      startTouchX = e.touches[0].clientX
+      startScrollLeft = container.scrollLeft
+      startIndex = TABS.findIndex(t => t.id === activeTabRef.current)
+    }
+
+    const onTouchEnd = (e: TouchEvent): void => {
+      touchActive = false
+      const endTouchX = e.changedTouches[0].clientX
+      const touchDelta = startTouchX - endTouchX
+      // Esperar a que termine la inercia del scroll-snap
+      window.setTimeout(() => {
+        if (container.scrollWidth <= container.clientWidth) return
+        const scrollDelta = container.scrollLeft - startScrollLeft
+        const closest = findClosestIndex()
+        let next: number
+        if (closest !== startIndex) {
+          next = closest
+        } else if (Math.abs(touchDelta) > 12 || Math.abs(scrollDelta) > 8) {
+          // Seguro: si el snap dejó el tab a la mitad, forzar al vecino en la dirección del swipe
+          next = startIndex + (touchDelta > 0 ? 1 : -1)
+        } else {
+          return // fue un tap, no un swipe
+        }
+        next = Math.max(0, Math.min(TABS.length - 1, next))
+        const targetId = TABS[next].id
+        if (targetId !== activeTabRef.current) setActiveTab(targetId)
+      }, 180)
+    }
+
+    const onScroll = (): void => {
+      if (touchActive) return
+      window.clearTimeout(scrollTimer)
+      scrollTimer = window.setTimeout(() => {
+        if (container.scrollWidth <= container.clientWidth) return
+        const closestId = TABS[findClosestIndex()].id
+        if (closestId !== activeTabRef.current) setActiveTab(closestId)
+      }, 90)
+    }
+
+    container.addEventListener('touchstart', onTouchStart, { passive: true })
+    container.addEventListener('touchend', onTouchEnd, { passive: true })
+    container.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart)
+      container.removeEventListener('touchend', onTouchEnd)
+      container.removeEventListener('scroll', onScroll)
+      window.clearTimeout(scrollTimer)
+    }
+  }, [])
+
+  // Al cambiar tab por clic, centrar el botón en el carrusel (solo si es scrollable).
+  useEffect(() => {
+    const container = tabsRef.current
+    const btn = tabBtnRefs.current[activeTab]
+    if (!container || !btn) return
+    if (container.scrollWidth <= container.clientWidth) return
+    const target = btn.offsetLeft - container.clientWidth / 2 + btn.offsetWidth / 2
+    container.scrollTo({ left: target, behavior: 'smooth' })
+  }, [activeTab])
 
   const renderContent = (): JSX.Element => {
     switch (activeTab) {
@@ -723,10 +816,11 @@ const DocsSection = (): JSX.Element => {
               <span className="docs__sidebar-hint--desktop">↳ Da clic en cada sección para navegar</span>
               <span className="docs__sidebar-hint--mobile">Desliza para ver todas las secciones</span>
             </div>
-            <div className="docs__sidebar-tabs">
+            <div ref={tabsRef} className="docs__sidebar-tabs">
             {TABS.map(tab => (
               <button
                 key={tab.id}
+                ref={el => { tabBtnRefs.current[tab.id] = el }}
                 className={`docs__tab ${activeTab === tab.id ? 'docs__tab--active' : ''}`}
                 onClick={() => setActiveTab(tab.id)}
               >

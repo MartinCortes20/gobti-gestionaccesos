@@ -1244,6 +1244,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: 50%;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 0.35rem;
     min-width: 0;
@@ -1277,7 +1278,8 @@
     min-width: auto;
     justify-content: flex-start;
     text-align: left;
-    scroll-snap-align: start;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
     padding: 0.5rem 0.8rem 0.5rem 0.55rem;
   }
 
