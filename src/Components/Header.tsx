@@ -14,7 +14,7 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Académico',  href: '#academico'  },
 ]
 
-const DRIVE_URL = '#'
+const DRIVE_URL = 'https://drive.google.com/drive/folders/1BpBr4jUQ4n0VdSRXfwKs-vA83cf0y2aQ?usp=drive_link'
 
 const Header = (): JSX.Element => {
   const [scrolled, setScrolled] = useState<boolean>(false)

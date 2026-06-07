@@ -19,7 +19,7 @@ const PILLARS: Pillar[] = [
   { icon: '◆', label: '7CV4',  desc: 'Gobierno de TI'                },
 ]
 
-const DRIVE_URL = '#'
+const DRIVE_URL = 'https://drive.google.com/drive/folders/1BpBr4jUQ4n0VdSRXfwKs-vA83cf0y2aQ?usp=drive_link'
 
 const FOOTER_LINKS: FooterLink[] = [
   { label: 'IPN',    href: 'https://www.ipn.mx/'                    },

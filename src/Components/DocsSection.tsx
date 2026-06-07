@@ -46,7 +46,43 @@ const TABS: Tab[] = [
   { id: 'plan',            label: 'Plan de Continuidad',            icon: '◯' },
 ]
 
-const DRIVE_URL = '#'
+const DRIVE_URL = 'https://drive.google.com/drive/folders/1BpBr4jUQ4n0VdSRXfwKs-vA83cf0y2aQ?usp=drive_link'
+
+// ── Visor de PDFs (Google Drive) ─────────────────────────
+// Pega el ID de cada PDF: es lo que va entre /d/ y /view del enlace de compartir.
+// En Drive: clic derecho sobre el PDF → Compartir → "Cualquier persona con el enlace"
+// → Copiar vínculo. De https://drive.google.com/file/d/AQUI_VA_EL_ID/view copia el ID.
+const PDF_IDS: Partial<Record<TabId, string>> = {
+  cedula:     '1Q2S1iwt1-FP93p-qbqbvHDveLxW87nHE', // CEDULA DE SERVICIO SEGUNDA PARTE (1).pdf
+  matriz:     '1SSKJ2mtZ7XkEZ9PVYcuBqDXiA8IKXrof', // 5 Riesgos Gestion Accesos.pdf
+  plan:       '1e6QzCbYlMkToshvwQQ54Addv_KwF8ztg', // Administración de disponibilidad.pdf
+  caso:       '1vHzpZsnf-cUm5nXyTI4OXE_VFuFXlGNU', // casosnegocio.pdf
+  'metas-corp': '10lCTN6CXzZ5exCL4N1pU8kzCFFUiJubW', // MetaCorporativasMapaEstrategico (1).pdf
+  mapa:       '10lCTN6CXzZ5exCL4N1pU8kzCFFUiJubW', // MetaCorporativasMapaEstrategico (1).pdf
+  'metas-ti': '1dK7aY707LBApe8_UYgaIkf9G0ISsgVDY', // metasTI.pdf
+}
+
+interface PdfEmbedProps {
+  tabId?: TabId
+  id?: string
+  title: string
+}
+const PdfEmbed = ({ tabId, id: idProp, title }: PdfEmbedProps): JSX.Element | null => {
+  const id = idProp ?? (tabId ? PDF_IDS[tabId] : undefined)
+  if (!id) return null
+  return (
+    <div className="docs__pdf">
+      <div className="docs__pdf-bar">
+        <span className="docs__pdf-name mono">{title}</span>
+        <div className="docs__pdf-actions">
+          <a className="docs__pdf-link mono" href={`https://drive.google.com/file/d/${id}/view`} target="_blank" rel="noopener noreferrer">Abrir ↗</a>
+          <a className="docs__pdf-link mono" href={`https://drive.google.com/uc?export=download&id=${id}`} target="_blank" rel="noopener noreferrer">Descargar ↓</a>
+        </div>
+      </div>
+      <iframe className="docs__pdf-frame" src={`https://drive.google.com/file/d/${id}/preview`} title={title} />
+    </div>
+  )
+}
 
 // ── Helpers ──────────────────────────────────────────────
 interface PendingCardProps {
@@ -302,6 +338,7 @@ const TabMetasCorp = (): JSX.Element => (
         Una meta corporativa por cada dimensión del <strong>Balanced Scorecard</strong>,
         mapeada con el catálogo COBIT.
       </p>
+      <PdfEmbed tabId="metas-corp" title="Metas corporativas y mapa estratégico.pdf" />
       <PendingCard
         title="Metas corporativas — 1 por dimensión BSC"
         description="Tabla con las 4 metas corporativas (Financiera, Cliente, Procesos internos, Aprendizaje y crecimiento) alineadas al catálogo COBIT."
@@ -319,6 +356,7 @@ const TabMetasTI = (): JSX.Element => (
         Una meta de TI por cada dimensión del <strong>Balanced Scorecard</strong>,
         derivada de las metas corporativas y mapeada con el catálogo COBIT.
       </p>
+      <PdfEmbed tabId="metas-ti" title="Metas de TI.pdf" />
       <PendingCard
         title="Metas de TI — 1 por dimensión BSC"
         description="Tabla con las 4 metas de TI (Financiera, Cliente, Procesos internos, Aprendizaje y crecimiento) alineadas al catálogo COBIT."
@@ -354,6 +392,7 @@ const TabMapa = (): JSX.Element => (
         <strong>una meta de TI</strong> seleccionadas, visualizando relaciones causa-efecto
         entre las cuatro dimensiones del Balanced Scorecard.
       </p>
+      <PdfEmbed tabId="mapa" title="Metas corporativas y mapa estratégico.pdf" />
       <PendingCard
         title="Mapa estratégico"
         description="Mapa estratégico con 1 meta corporativa y 1 meta de TI seleccionadas, mostrando relaciones causa-efecto entre las dimensiones del BSC."
@@ -443,6 +482,7 @@ const TabCaso = (): JSX.Element => (
 
     <div className="docs__section">
       <h3 className="docs__h3">Caso de Negocio — formato completo</h3>
+      <PdfEmbed tabId="caso" title="Caso de negocio.pdf" />
       <PendingCard
         title="Caso de Negocio (formato institucional)"
         description="Documento formal con problema, solución propuesta, alternativas evaluadas, análisis costo-beneficio, ROI, supuestos y restricciones."
@@ -500,11 +540,13 @@ const TabCedula = (): JSX.Element => (
             </p>
           </div>
         </div>
+        <PdfEmbed id="1SprNVTBycMKsbLVEVZ9vjBY51_SgJhe5" title="Cédula de servicio — Gestión de accesos.pdf" />
       </Deliverable>
     </div>
 
     <div className="docs__section">
       <h3 className="docs__h3">Cédula ITIL completa</h3>
+      <PdfEmbed tabId="cedula" title="Cédula de servicio — Gestión de accesos.pdf" />
       <PendingCard
         title="Cédula de servicio ITIL — formato completo"
         description="Documento ITIL con todos los campos formales: alcance detallado, SLA, OLAs, propietario, gestor, procesos relacionados, métricas, KPIs, dependencias y horario de operación."
@@ -581,6 +623,7 @@ const TabMatriz = (): JSX.Element => (
 
     <div className="docs__section">
       <h3 className="docs__h3">Matriz CID</h3>
+      <PdfEmbed tabId="matriz" title="5 Riesgos Gestión Accesos.pdf" />
       <PendingCard
         title="Matriz CID (Confidencialidad · Integridad · Disponibilidad)"
         description="Matriz formal ISO 27000 con valoración por activo en las tres dimensiones CID, controles aplicables del Anexo A y nivel de riesgo residual."
@@ -656,6 +699,7 @@ const TabPlan = (): JSX.Element => (
         de respuesta y recuperación, comunicación de crisis y plan de pruebas y
         mantenimiento.
       </p>
+      <PdfEmbed tabId="plan" title="Administración de disponibilidad.pdf" />
       <PendingCard
         title="Plan de Continuidad del Negocio (BCP)"
         description="Documento formal con fases del plan, roles, procedimientos de respuesta y recuperación, comunicación de crisis y plan de pruebas y mantenimiento."
@@ -668,10 +712,6 @@ const TabPlan = (): JSX.Element => (
 const DocsSection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState<TabId>('introduccion')
   const headRef = useRef<HTMLDivElement>(null)
-  const tabsRef = useRef<HTMLDivElement>(null)
-  const tabBtnRefs = useRef<Partial<Record<TabId, HTMLButtonElement | null>>>({})
-  const activeTabRef = useRef<TabId>(activeTab)
-  activeTabRef.current = activeTab
 
   useEffect(() => {
     const el = headRef.current
@@ -683,95 +723,6 @@ const DocsSection = (): JSX.Element => {
     obs.observe(el)
     return () => obs.disconnect()
   }, [])
-
-  // En móvil: al deslizar el carrusel de tabs, siempre avanza al siguiente/anterior
-  // (no se queda a la mitad). Detecta dirección del swipe y fuerza el cambio.
-  useEffect(() => {
-    const container = tabsRef.current
-    if (!container) return
-
-    let touchActive = false
-    let startTouchX = 0
-    let startScrollLeft = 0
-    let startIndex = 0
-    let scrollTimer: number | undefined
-
-    const findClosestIndex = (): number => {
-      const cRect = container.getBoundingClientRect()
-      const center = cRect.left + cRect.width / 2
-      let closest = 0
-      let closestDist = Infinity
-      TABS.forEach((tab, i) => {
-        const btn = tabBtnRefs.current[tab.id]
-        if (!btn) return
-        const r = btn.getBoundingClientRect()
-        const d = Math.abs(r.left + r.width / 2 - center)
-        if (d < closestDist) { closestDist = d; closest = i }
-      })
-      return closest
-    }
-
-    const onTouchStart = (e: TouchEvent): void => {
-      touchActive = true
-      startTouchX = e.touches[0].clientX
-      startScrollLeft = container.scrollLeft
-      startIndex = TABS.findIndex(t => t.id === activeTabRef.current)
-    }
-
-    const onTouchEnd = (e: TouchEvent): void => {
-      touchActive = false
-      const endTouchX = e.changedTouches[0].clientX
-      const touchDelta = startTouchX - endTouchX
-      // Esperar a que termine la inercia del scroll-snap
-      window.setTimeout(() => {
-        if (container.scrollWidth <= container.clientWidth) return
-        const scrollDelta = container.scrollLeft - startScrollLeft
-        const closest = findClosestIndex()
-        let next: number
-        if (closest !== startIndex) {
-          next = closest
-        } else if (Math.abs(touchDelta) > 12 || Math.abs(scrollDelta) > 8) {
-          // Seguro: si el snap dejó el tab a la mitad, forzar al vecino en la dirección del swipe
-          next = startIndex + (touchDelta > 0 ? 1 : -1)
-        } else {
-          return // fue un tap, no un swipe
-        }
-        next = Math.max(0, Math.min(TABS.length - 1, next))
-        const targetId = TABS[next].id
-        if (targetId !== activeTabRef.current) setActiveTab(targetId)
-      }, 180)
-    }
-
-    const onScroll = (): void => {
-      if (touchActive) return
-      window.clearTimeout(scrollTimer)
-      scrollTimer = window.setTimeout(() => {
-        if (container.scrollWidth <= container.clientWidth) return
-        const closestId = TABS[findClosestIndex()].id
-        if (closestId !== activeTabRef.current) setActiveTab(closestId)
-      }, 90)
-    }
-
-    container.addEventListener('touchstart', onTouchStart, { passive: true })
-    container.addEventListener('touchend', onTouchEnd, { passive: true })
-    container.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      container.removeEventListener('touchstart', onTouchStart)
-      container.removeEventListener('touchend', onTouchEnd)
-      container.removeEventListener('scroll', onScroll)
-      window.clearTimeout(scrollTimer)
-    }
-  }, [])
-
-  // Al cambiar tab por clic, centrar el botón en el carrusel (solo si es scrollable).
-  useEffect(() => {
-    const container = tabsRef.current
-    const btn = tabBtnRefs.current[activeTab]
-    if (!container || !btn) return
-    if (container.scrollWidth <= container.clientWidth) return
-    const target = btn.offsetLeft - container.clientWidth / 2 + btn.offsetWidth / 2
-    container.scrollTo({ left: target, behavior: 'smooth' })
-  }, [activeTab])
 
   const renderContent = (): JSX.Element => {
     switch (activeTab) {
@@ -816,11 +767,10 @@ const DocsSection = (): JSX.Element => {
               <span className="docs__sidebar-hint--desktop">↳ Da clic en cada sección para navegar</span>
               <span className="docs__sidebar-hint--mobile">Desliza para ver todas las secciones</span>
             </div>
-            <div ref={tabsRef} className="docs__sidebar-tabs">
+            <div className="docs__sidebar-tabs">
             {TABS.map(tab => (
               <button
                 key={tab.id}
-                ref={el => { tabBtnRefs.current[tab.id] = el }}
                 className={`docs__tab ${activeTab === tab.id ? 'docs__tab--active' : ''}`}
                 onClick={() => setActiveTab(tab.id)}
               >

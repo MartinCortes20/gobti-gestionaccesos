@@ -13,7 +13,7 @@ const STATS: Stat[] = [
   { value: '7CV4',  label: 'ESCOM · IPN'        },
 ]
 
-const DRIVE_URL = '#'
+const DRIVE_URL = 'https://drive.google.com/drive/folders/1BpBr4jUQ4n0VdSRXfwKs-vA83cf0y2aQ?usp=drive_link'
 
 const HeroSection = (): JSX.Element => {
   return (
