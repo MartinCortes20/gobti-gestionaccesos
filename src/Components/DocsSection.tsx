@@ -55,11 +55,16 @@ const DRIVE_URL = 'https://drive.google.com/drive/folders/1BpBr4jUQ4n0VdSRXfwKs-
 const PDF_IDS: Partial<Record<TabId, string>> = {
   cedula:     '1Q2S1iwt1-FP93p-qbqbvHDveLxW87nHE', // CEDULA DE SERVICIO SEGUNDA PARTE (1).pdf
   matriz:     '1SSKJ2mtZ7XkEZ9PVYcuBqDXiA8IKXrof', // 5 Riesgos Gestion Accesos.pdf
-  plan:       '1e6QzCbYlMkToshvwQQ54Addv_KwF8ztg', // Administración de disponibilidad.pdf
+  plan:       '1C4SQ3wDyJ3-6842vegx3TkxoWCeNlRZC', // Plan de Continuidad del Negocio.pdf
   caso:       '1vHzpZsnf-cUm5nXyTI4OXE_VFuFXlGNU', // casosnegocio.pdf
   'metas-corp': '10lCTN6CXzZ5exCL4N1pU8kzCFFUiJubW', // MetaCorporativasMapaEstrategico (1).pdf
   mapa:       '10lCTN6CXzZ5exCL4N1pU8kzCFFUiJubW', // MetaCorporativasMapaEstrategico (1).pdf
   'metas-ti': '1dK7aY707LBApe8_UYgaIkf9G0ISsgVDY', // metasTI.pdf
+  cascada:    '199KI76ALqWuuiCiRCS3z7gNn78JT0BL8', // cascada de metas.pdf
+  arquitectura: '13ejbg4qPHQMb03D7W5sYqGSBP76EnZrD', // diagrama de arquitectura.pdf
+  inventario: '1r4rM6Umtt4eAvRoa5kQuBQ2JOK2LBeIy', // inventario de activos.pdf
+  'bia-tactico':     '1ngtP3OO5RBQIMrR-ZPY8bwGAerMqrXOK', // BIA táctico.pdf
+  'bia-operacional': '1Ryjvwwrx3DZOAPNTBoC-xR0JaNhzavrM', // BIA operacional.pdf
 }
 
 interface PdfEmbedProps {
@@ -97,7 +102,7 @@ const PendingCard = ({ title, description, driveUrl = DRIVE_URL }: PendingCardPr
     <p className="docs__pending-desc">{description}</p>
     <div className="docs__pending-body">
       <div className="docs__pending-qr">
-        <div className="docs__pending-qr-box"><span className="mono">QR</span></div>
+        <div className="docs__pending-qr-box"><img src="/qrDrive.png" alt="QR carpeta de Drive" className="docs__qr-img" /></div>
         <span className="docs__pending-qr-label mono">Escanea para abrir</span>
       </div>
       <a
@@ -374,6 +379,7 @@ const TabCascada = (): JSX.Element => (
         Mapeo de relaciones <strong>primarias</strong> y <strong>secundarias</strong>{' '}
         entre metas corporativas y metas de TI, conforme al marco COBIT.
       </p>
+      <PdfEmbed tabId="cascada" title="Cascada de metas.pdf" />
       <PendingCard
         title="Cascada de metas COBIT"
         description="Diagrama del mapeo de relaciones primarias y secundarias entre metas corporativas y metas de TI."
@@ -565,6 +571,7 @@ const TabArquitectura = (): JSX.Element => (
         autenticación y autorización, integración con sistemas existentes y diagrama de
         despliegue.
       </p>
+      <PdfEmbed tabId="arquitectura" title="Diagrama de arquitectura.pdf" />
       <PendingCard
         title="Arquitectura técnica"
         description="Diagrama de arquitectura del servicio: componentes (directorio, broker de autenticación, SSO, MFA, módulo de auditoría), flujos, protocolos (SAML/OIDC/LDAP) e integración con correo y sistemas."
@@ -583,6 +590,7 @@ const TabInventario = (): JSX.Element => (
         del servicio: alta, modificación y baja de accesos. Clasificación por tipo
         (información, hardware, software, personas, servicios) bajo ISO/IEC 27001:2022.
       </p>
+      <PdfEmbed tabId="inventario" title="Inventario de activos.pdf" />
       <PendingCard
         title="Inventario integrado — 3 procesos del servicio"
         description="Inventario consolidado de activos de información, hardware, software, personas y servicios para los 3 procesos clave del servicio: alta, modificación y baja de accesos."
@@ -664,6 +672,7 @@ const TabBIATactico = (): JSX.Element => (
           </div>
         ))}
       </div>
+      <PdfEmbed tabId="bia-tactico" title="BIA táctico.pdf" />
       <PendingCard
         title="BIA Tácticos — 3 documentos integrados"
         description="Análisis de impacto al negocio para los 3 procesos del servicio. Incluye RTO, RPO, MTPD, impactos financiero, operacional, reputacional y legal."
@@ -681,6 +690,7 @@ const TabBIAOperacional = (): JSX.Element => (
         Un BIA único a nivel operacional del servicio completo de gestión de accesos,
         que consolida los hallazgos de los 3 BIA tácticos.
       </p>
+      <PdfEmbed tabId="bia-operacional" title="BIA operacional.pdf" />
       <PendingCard
         title="BIA Operacional integrado"
         description="BIA único a nivel operacional del servicio completo. Consolida hallazgos de los 3 BIA tácticos en un análisis de impacto end-to-end."
@@ -699,7 +709,7 @@ const TabPlan = (): JSX.Element => (
         de respuesta y recuperación, comunicación de crisis y plan de pruebas y
         mantenimiento.
       </p>
-      <PdfEmbed tabId="plan" title="Administración de disponibilidad.pdf" />
+      <PdfEmbed tabId="plan" title="Plan de Continuidad del Negocio.pdf" />
       <PendingCard
         title="Plan de Continuidad del Negocio (BCP)"
         description="Documento formal con fases del plan, roles, procedimientos de respuesta y recuperación, comunicación de crisis y plan de pruebas y mantenimiento."
@@ -790,7 +800,7 @@ const DocsSection = (): JSX.Element => {
               </a>
               <div className="docs__sidebar-qr">
                 <div className="docs__sidebar-qr-placeholder">
-                  <span className="mono">QR</span>
+                  <img src="/qrDrive.png" alt="QR carpeta de Drive" className="docs__qr-img" />
                 </div>
                 <span className="docs__sidebar-qr-label mono">Drive del proyecto</span>
               </div>
