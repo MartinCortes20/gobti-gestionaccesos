@@ -113,17 +113,18 @@ En [DocsSection.tsx](src/Components/DocsSection.tsx):
 |---|---|
 | Cédula de Servicio | ✅ |
 | Matriz de Riesgos (CID) | ✅ |
+| Matriz CID — Control de Acceso (xlsx) | ✅ |
 | Plan de Continuidad | ✅ |
 | Caso de Negocio | ✅ |
 | Metas Corporativas | ✅ |
 | Mapa Estratégico | ✅ |
 | Metas de TI | ✅ |
-| Cascada de Metas | ❌ pendiente |
-| Arquitectura del Servicio | ❌ pendiente |
-| Inventario de Activos | ❌ pendiente |
-| BIA Táctico | ❌ pendiente |
-| BIA Operacional | ❌ pendiente |
-| Matriz de Infraestructuras Críticas (sub-sección) | ❌ pendiente |
+| Cascada de Metas | ✅ |
+| Arquitectura del Servicio | ✅ |
+| Inventario de Activos | ✅ |
+| BIA Táctico | ✅ |
+| BIA Operacional | ✅ |
+| Matriz de Infraestructuras Críticas (sub-sección) | ✅ |
 
 Introducción, Objetivo, Descripción y Misión/Visión/Valores no usan PDF: su contenido está
 escrito directo en la página.

@@ -632,6 +632,7 @@ const TabMatriz = (): JSX.Element => (
     <div className="docs__section">
       <h3 className="docs__h3">Matriz CID</h3>
       <PdfEmbed tabId="matriz" title="5 Riesgos Gestión Accesos.pdf" />
+      <PdfEmbed id="1_KfDkTjAqIKEPCL-wqTK_vc5HgE6XoYh" title="Matriz CID — Control de Acceso.xlsx" />
       <PendingCard
         title="Matriz CID (Confidencialidad · Integridad · Disponibilidad)"
         description="Matriz formal ISO 27000 con valoración por activo en las tres dimensiones CID, controles aplicables del Anexo A y nivel de riesgo residual."
@@ -640,6 +641,7 @@ const TabMatriz = (): JSX.Element => (
 
     <div className="docs__section">
       <h3 className="docs__h3">Matriz de Infraestructuras Críticas</h3>
+      <PdfEmbed id="1OZ9GI2JBWCXULP_O4iqm213XqFUw1znz" title="Matriz CID e infraestructuras críticas.pdf" />
       <PendingCard
         title="Matriz de infraestructuras críticas"
         description="Identificación de infraestructuras críticas del servicio, dependencias entre activos, criticidad operacional y plan de protección."
